@@ -8,7 +8,7 @@
 (def postgres-conf
   {:subprotocol "postgresql"
    :subname (getenv "POSTGRES_URL" "//localhost:5432/senior-coffee-scramble")
-   :user (getenv "POSTGRES_USER")
+   :user (getenv "POSTGRES_USER" (getenv "USER"))
    :password (getenv "POSTGRES_PASSWD")})
 
 (defn add-invitations [inviter-name inviter-uni invitee-unis]

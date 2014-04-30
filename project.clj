@@ -4,7 +4,8 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.6"]
                  [org.clojure/java.jdbc "0.3.2"]
-                 [ring/ring-jetty-adapter "1.2.1"]
+                 [ring/ring-jetty-adapter "1.2.2"]
+                 [ring/ring-core "1.2.2"]
                  [postgresql "9.1-901.jdbc4"]]
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler senior-coffee-scramble.handler/app}
