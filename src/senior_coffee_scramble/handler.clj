@@ -12,13 +12,12 @@
   (let [inviter-name (-> request :params :name)
         inviter-uni  (-> request :params :uni)
         invitee-unis (form-to-invitee-list (:form-params request))]
-    (println invitee-unis)
     (if (or (string/blank? inviter-name)
             (string/blank? inviter-uni)
             (empty? invitee-unis))
       (redirect "/error.html")
       (do
-        (add-invitations inviter-name inviter-uni invitee-unis)
+        (println (add-invitations inviter-name inviter-uni invitee-unis))
         (redirect "/recorded.html")))))
 
 (defroutes app-routes

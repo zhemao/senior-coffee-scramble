@@ -16,7 +16,8 @@ create table invitations (
     id serial primary key,
     inviter varchar(8),
     invitee varchar(8),
-    confirmed boolean
+    confirmed boolean,
+    unique (inviter, invitee)
 );
 
 create index students_by_uni on students (uni);
