@@ -1,9 +1,14 @@
-<html>
-  <head>
-    <title>Senior Coffee Scramble</title>
-  </head>
-  <body>
-    <form action="/invite" method="post">
+{% extends "base.html" %}
+
+{% block title %}Senior Coffee Scramble{% endblock %}
+
+{% block body %}
+  {% if error %}
+    <p id="error-message">
+      You must fill in your name, UNI, and at least one invitee
+    </p>
+  {% endif %}
+  <form action="/invite" method="post">
       <p>Your Name: <input type="text" name="name"/></p>
       <p>Your UNI:  <input type="text" name="uni"/></p>
       <p>Put the UNIs of the people you'd like to invite below.</p>
@@ -22,5 +27,4 @@
       </ul>
       <p><input type="submit" value="Invite"/></p>
     </form>
-  </body>
-</html>
+{% endblock %}
