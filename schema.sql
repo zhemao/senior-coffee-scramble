@@ -1,10 +1,8 @@
 drop table if exists students;
 drop table if exists invitations;
 
-drop index if exists students_by_uni;
 drop index if exists invitations_by_inviter;
 drop index if exists invitations_by_invitee;
-drop index if exists invitations_by_pair;
 
 create table students (
     id serial primary key,
@@ -22,7 +20,5 @@ create table invitations (
     unique (inviter, invitee)
 );
 
-create index students_by_uni on students (uni);
 create index invitations_by_inviter on invitations (inviter);
 create index invitations_by_invitee on invitations (invitee);
-create index invitations_by_pair on invitations (inviter, invitee);
