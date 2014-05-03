@@ -12,10 +12,9 @@
                  [postgresql "9.1-901.jdbc4"]]
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler senior-coffee-scramble.handler/app}
-  :main senior-coffee-scramble.core
-  :aot [senior-coffee-scramble.core]
+  :main ^:skip-aot senior-coffee-scramble.core
   :uberjar-name "senior-coffee-scramble.jar"
   :resource-paths ["resources" "resources/templates"]
-  :profiles
-  {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring-mock "0.1.5"]]}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:dependencies [[javax.servlet/servlet-api "2.5"]
+                                  [ring-mock "0.1.5"]]}})
