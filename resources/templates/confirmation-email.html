@@ -1,0 +1,25 @@
+<html>
+<body>
+  <p>
+    Hello, {{name}}. You have invited the following people to have coffee
+    with you on Senior Coffee Scramble.
+  </p>
+
+  <ul>
+    {% for uni in invitees %}
+      <li><a href="https://directory.columbia.edu/people/uni?code={{uni}}">
+          {{uni}}</a></li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    If this is correct, please follow the confirmation link below to confirm
+    your invitations.
+  </p>
+  <p>
+    <a href="http://{{site-name}}/confirm/{{obfuscated-id}}">
+      http://{{site-name}}/confirm/{{obfuscated-id}}
+    </a>
+  </p>
+</body>
+</html>

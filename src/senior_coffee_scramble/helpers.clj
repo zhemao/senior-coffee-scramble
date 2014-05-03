@@ -27,3 +27,9 @@
 (defn getenv
   ([varname] (getenv varname ""))
   ([varname default] (or (System/getenv varname) default)))
+
+(defn try-function [f & args]
+  (try
+    (apply f args)
+    (catch Exception e
+      (println (exception-stacktrace e)))))

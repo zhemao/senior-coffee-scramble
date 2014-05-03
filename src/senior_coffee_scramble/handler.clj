@@ -1,10 +1,12 @@
 (ns senior-coffee-scramble.handler
   (:use compojure.core
+        senior-coffee-scramble.mailer
         senior-coffee-scramble.helpers
         senior-coffee-scramble.database)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.string :as string]
+            [clojure.core.async :refer [go]]
             [selmer.parser :refer [render-file]]
             [ring.util.response :refer [redirect]]))
 
@@ -16,14 +18,12 @@
             (string/blank? inviter-uni)
             (empty? invitee-unis))
       (redirect "/?error=true")
-      (try
-        (add-invitations inviter-name inviter-uni invitee-unis)
-        (redirect (str "/recorded/" inviter-uni))
-        (catch Exception e
-          (if (System/getenv "DEBUG")
-            {:status 500
-             :body (exception-stacktrace e)}
-            (redirect (str "/already-sent/" inviter-uni))))))))
+      (if-let [results (add-invitations inviter-name inviter-uni invitee-unis)]
+        (do
+          (go (try-function send-confirmation-email
+                            (first results) (rest results)))
+          (redirect (str "/recorded/" inviter-uni)))
+        (redirect (str "/already-sent/" inviter-uni))))))
 
 (defn confirm-handler [id]
   (if (valid-id? id)

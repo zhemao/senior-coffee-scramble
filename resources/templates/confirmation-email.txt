@@ -1,0 +1,11 @@
+Hello, {{name}}. You have invited the following people to have coffee
+with you on Senior Coffee Scramble.
+
+{% for uni in invitees %}
+ - {{uni}}
+{% endfor %}
+
+If this is correct, please follow the confirmation link below to confirm
+your invitations.
+
+http://{{site-name}}/confirm/{{obfuscated-id}}
