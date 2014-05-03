@@ -41,12 +41,12 @@
         (if-not (:confirmed existing-student)
           (do
             (sql/delete! trans :invitations ["inviter = ?" inviter-uni])
-            (concat
-              (sql/update! trans :students student
-                           ["uni = ?" inviter-uni])
-              (insert-invitations trans inviter-uni invitee-unis)))
-          ; otherwise, throw an exception
-          (throw (Exception. "Invitations already sent.")))))))
+            (cons (assoc student :id
+                         (first (sql/update! trans :students student
+                                             ["uni = ?" inviter-uni])))
+                  (insert-invitations trans inviter-uni invitee-unis)))
+          ; otherwise, return nil 
+          nil)))))
 
 (defn confirm-invitations [id]
   (sql/with-db-transaction [trans postgres-conf]
