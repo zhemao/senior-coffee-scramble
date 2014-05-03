@@ -5,6 +5,6 @@
 (defn start [port]
   (ring/run-jetty app {:port port :join? false}))
 
-(defn -main []
-  (let [port (Integer. (or (System/getenv "PORT") "8080"))]
+(defn -main [& args]
+  (let [port (if (empty? args) 8080 (Integer/parseInt (first args)))]
     (start port)))
