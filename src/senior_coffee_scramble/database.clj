@@ -4,7 +4,7 @@
 
 (def postgres-conf
   {:subprotocol "postgresql"
-   :subname (getenv "POSTGRES_URL" "//localhost:5432/senior-coffee-scramble")
+   :subname (getenv "POSTGRES_URL" "//localhost:5432/senior-scramble")
    :user (getenv "POSTGRES_USER" (getenv "USER"))
    :password (getenv "POSTGRES_PASSWD")})
 
@@ -56,3 +56,9 @@
         (sql/update! trans :invitations {:confirmed true}
                      ["inviter = ?" (:uni student)]))
       student)))
+
+(defn find-unsent-invitations []
+  (sql/query postgres-conf
+    ["SELECT i.invitee, s.uni, s.name FROM invitations i
+        LEFT JOIN students s ON i.inviter = s.uni
+        WHERE i.confirmed AND NOT i.email_sent ORDER BY i.invitee"]))
