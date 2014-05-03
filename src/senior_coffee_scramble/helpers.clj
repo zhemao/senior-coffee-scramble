@@ -23,3 +23,7 @@
 
 (defn deobfuscate [obfuscated-id]
   (bit-xor (Integer/parseInt obfuscated-id 16) OBFUSCATION_NUMBER))
+
+(defn getenv
+  ([varname] (getenv varname ""))
+  ([varname default] (or (System/getenv varname) default)))

@@ -1,9 +1,6 @@
 (ns senior-coffee-scramble.database
-  (:require [clojure.java.jdbc :as sql]))
-
-(defn getenv
-  ([varname] (getenv varname ""))
-  ([varname default] (or (System/getenv varname) default)))
+  (:require [senior-coffee-scramble.helpers :refer [getenv]]
+            [clojure.java.jdbc :as sql]))
 
 (def postgres-conf
   {:subprotocol "postgresql"

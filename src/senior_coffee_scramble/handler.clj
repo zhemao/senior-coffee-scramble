@@ -5,7 +5,7 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.string :as string]
-            [selmer.parser :as selmer]
+            [selmer.parser :refer [render-file]]
             [ring.util.response :refer [redirect]]))
 
 (defn invite-handler [request]
@@ -29,18 +29,18 @@
   (if (valid-id? id)
     (let [student (confirm-invitations (deobfuscate id))]
       (if-not (nil? student)
-        (selmer/render-file "confirmed.html" student)
+        (render-file "confirmed.html" student)
         {:status 404
-         :body (selmer/render-file "invalid-link.html" {})}))
+         :body (render-file "invalid-link.html" {})}))
     {:status 404
-     :body (selmer/render-file "invalid-link.html" {})}))
+     :body (render-file "invalid-link.html" {})}))
 
 (defroutes app-routes
-  (GET "/" [error] (selmer/render-file "index.html" {:error error}))
+  (GET "/" [error] (render-file "index.html" {:error error}))
   (POST "/invite" request (invite-handler request))
-  (GET "/recorded/:uni" [uni] (selmer/render-file "recorded.html" {:uni uni}))
+  (GET "/recorded/:uni" [uni] (render-file "recorded.html" {:uni uni}))
   (GET "/already-sent/:uni" [uni]
-       (selmer/render-file "already-sent.html" {:uni uni}))
+       (render-file "already-sent.html" {:uni uni}))
   (GET "/confirm/:id" [id] (confirm-handler id))
   (route/resources "/")
   (route/not-found "Not Found"))
