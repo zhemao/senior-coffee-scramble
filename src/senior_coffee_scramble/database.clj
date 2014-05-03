@@ -23,12 +23,9 @@
     (sql/query trans ["SELECT * FROM students WHERE id = ?" id])))
 
 (defn insert-invitations [trans inviter-uni invitee-unis]
-  (flatten
-    (for [invitee-uni invitee-unis]
-      (sql/insert! trans :invitations
-                   {:inviter inviter-uni
-                    :invitee invitee-uni
-                    :confirmed false}))))
+  (apply (partial sql/insert! trans :invitations)
+     (for [invitee-uni invitee-unis]
+       {:inviter inviter-uni :invitee invitee-uni})))
 
 (defn add-invitations [inviter-name inviter-uni invitee-unis]
   (sql/with-db-transaction [trans postgres-conf]
