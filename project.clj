@@ -1,6 +1,7 @@
 (defproject senior-coffee-scramble "0.1.0-SNAPSHOT"
   :description "Senior Coffee Scramble App"
   :url "http://senior-coffee-scramble.herokuapp.com/"
+  :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/core.async "0.1.301.0-deb34a-alpha"]
                  [compojure "1.1.6"]
