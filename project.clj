@@ -14,7 +14,6 @@
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler senior-coffee-scramble.handler/app}
   :main ^:skip-aot senior-coffee-scramble.core
-  :uberjar-name "senior-coffee-scramble.jar"
   :resource-paths ["resources" "resources/templates"]
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[javax.servlet/servlet-api "2.5"]
