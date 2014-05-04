@@ -1,5 +1,5 @@
 Greetings from Senior Coffee Scramble. The following people would like to
-grab coffee with you and reconnect.
+grab coffee/tea/food/whatever with you and get to know you better.
 
 {% for invite in invitations %}
  * {{invite.name}} ({{invite.uni}}) {% if invite.message %}- "{{invite.message}}"{% endif %}
