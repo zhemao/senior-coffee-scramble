@@ -48,3 +48,21 @@
     (apply f args)
     (catch Exception e
       (println (exception-stacktrace e)))))
+
+(defn do-grouped [keyfn ungrouped action!]
+  (when-not (empty? ungrouped)
+    ; group holds the current group we are collecting
+    ; stream holds the remainder of the lazy sequence
+    (loop [group (list (first ungrouped))
+           stream (rest ungrouped)]
+      (if (empty? stream)
+        ; if the stream is empty, do the action on the last group
+        (action! group)
+        (let [top (first stream)]
+          (if (= (keyfn (first group)) (keyfn top))
+            ; if the keys match, push the object on top and move on
+            (recur (cons top group) (rest stream))
+            ; otherwise, clear the group
+            (do
+              (action! group)
+              (recur (list top) (rest stream)))))))))

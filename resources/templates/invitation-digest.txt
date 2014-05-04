@@ -1,0 +1,6 @@
+Greetings from Senior Coffee Scramble. The following people would like to
+grab coffee with you and reconnect.
+
+{% for invite in invitations %}
+ - {{invite.name}} ({{invite.uni}})
+{% endfor %}

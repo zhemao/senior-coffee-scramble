@@ -45,7 +45,7 @@
                          (first (sql/update! trans :students student
                                              ["uni = ?" inviter-uni])))
                   (insert-invitations trans inviter-uni invitee-unis)))
-          ; otherwise, return nil 
+          ; otherwise, return nil
           nil)))))
 
 (defn confirm-invitations [id]
@@ -59,6 +59,13 @@
 
 (defn find-unsent-invitations []
   (sql/query postgres-conf
-    ["SELECT i.invitee, s.uni, s.name FROM invitations i
+    ["SELECT i.id, i.invitee, s.uni, s.name FROM invitations i
         LEFT JOIN students s ON i.inviter = s.uni
         WHERE i.confirmed AND NOT i.email_sent ORDER BY i.invitee"]))
+
+(defn mark-invitations-sent [invitee]
+  (sql/update! postgres-conf :invitations {:email_sent true}
+               ["invitee = ?" invitee]))
+
+(defn cleanup-sent-invitations []
+  (sql/delete! postgres-conf :invitations ["email_sent"]))

@@ -1,0 +1,13 @@
+<html>
+  <body>
+    <p>Greetings from Senior Coffee Scramble. The following people would like
+       to grab coffee with you and reconnect.</p>
+    <ul>
+      {% for invite in invitations %}
+        <li><a href="mailto:{{invite.uni}}@columbia.edu"/>
+          {{invite.name}} ({{invite.uni}})
+        </a></li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
