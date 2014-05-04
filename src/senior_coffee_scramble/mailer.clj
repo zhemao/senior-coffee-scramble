@@ -3,21 +3,21 @@
   (:require [postal.core :as postal]
             [selmer.parser :refer [render-file]]))
 
-(def EMAIL-USER (getenv "EMAIL_USER"))
-(def SITE-NAME (getenv "SITE_NAME"))
-(def EMAIL-FROM (getenv "EMAIL_FROM" EMAIL-USER))
+(def EMAIL_USER (getenv "EMAIL_USER"))
+(def SITE_NAME (getenv "SITE_NAME"))
+(def EMAIL_FROM (getenv "EMAIL_FROM" EMAIL_USER))
 
-(def EMAIL-CONFIG
+(def EMAIL_CONFIG
   {:host (getenv "SMTP_HOST")
-   :user EMAIL-USER
+   :user EMAIL_USER
    :pass (getenv "EMAIL_PASSWD")
    :port (Integer/parseInt (getenv "SMTP_PORT" "25"))
    :tls (= "true" (getenv "SMTP_TLS"))})
 
 (defn send-email [recipient subject text-body html-body]
-  (postal/send-message EMAIL-CONFIG
+  (postal/send-message EMAIL_CONFIG
     {:to recipient
-     :from EMAIL-FROM
+     :from EMAIL_FROM
      :subject subject
      :body [:alternative
             {:type "text/plain"
@@ -31,7 +31,7 @@
         template-args {:obfuscated-id obfuscated-id
                        :name (:name inviter)
                        :invitees invitees
-                       :site-name SITE-NAME}
+                       :site-name SITE_NAME}
         text-body (render-file "confirmation-email.txt" template-args)
         html-body (render-file "confirmation-email.html" template-args)]
     (send-email (str (:uni inviter) "@columbia.edu")
