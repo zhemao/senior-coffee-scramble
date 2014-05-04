@@ -5,13 +5,6 @@
   ([varname] (getenv varname ""))
   ([varname default] (or (System/getenv varname) default)))
 
-(def MAX_INVITEES 10)
-
-(defn form-to-invitee-list [request]
-  (remove string/blank?
-    (for [i (range MAX_INVITEES)]
-      (request (str "invitee" i)))))
-
 (defn exception-stacktrace [e]
   (apply str (cons (str e "\n")
                    (map #(str "\tat " % "\n") (.getStackTrace e)))))

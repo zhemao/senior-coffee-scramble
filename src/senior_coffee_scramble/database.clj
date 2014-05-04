@@ -19,32 +19,35 @@
   (first-or-nil
     (sql/query trans ["SELECT * FROM students WHERE id = ?" id])))
 
-(defn insert-invitations [trans inviter-uni invitee-unis]
+(defn insert-invitations [trans inviter-uni invitations]
   (apply (partial sql/insert! trans :invitations)
-     (for [invitee-uni invitee-unis]
-       {:inviter inviter-uni :invitee invitee-uni})))
+     (for [invite invitations]
+       {:inviter inviter-uni
+        :invitee (:uni invite)
+        :message (:message invite)})))
 
-(defn add-invitations [inviter-name inviter-uni invitee-unis]
+(defn add-invitations [batch]
   (sql/with-db-transaction [trans postgres-conf]
     ; concatenate the results of the insertions together
-    (let [existing-student (find-student-by-uni trans inviter-uni)
-          student {:name inviter-name
-                   :uni inviter-uni
+    (let [existing-student (find-student-by-uni trans (:uni batch))
+          student {:name (:name batch)
+                   :uni (:uni batch)
                    :confirmed false}]
       (if (nil? existing-student)
         ; if the student doesn't exist create it and invitations
         (concat
           (sql/insert! trans :students student)
-          (insert-invitations trans inviter-uni invitee-unis))
+          (insert-invitations trans (:uni batch) (:invitations batch)))
         ; if the student exists but is not confirmed
         ; update the student and recreate the invitations
         (if-not (:confirmed existing-student)
           (do
-            (sql/delete! trans :invitations ["inviter = ?" inviter-uni])
+            (sql/delete! trans :invitations ["inviter = ?" (:uni batch)])
             (cons (assoc student :id
                          (first (sql/update! trans :students student
-                                             ["uni = ?" inviter-uni])))
-                  (insert-invitations trans inviter-uni invitee-unis)))
+                                             ["uni = ?" (:uni batch)])))
+                  (insert-invitations trans (:uni batch)
+                                      (:invitations batch))))
           ; otherwise, return nil
           nil)))))
 

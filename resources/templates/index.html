@@ -9,22 +9,18 @@
     </p>
   {% endif %}
   <form action="/invite" method="post">
-      <p>Your Name: <input type="text" name="name"/></p>
-      <p>Your UNI:  <input type="text" name="uni"/></p>
-      <p>Put the UNIs of the people you'd like to invite below.</p>
-      <p>If they put you as well, you will both get an email.</p>
-      <ul>
-        <li><input type="text" name="invitee0"/></li>
-        <li><input type="text" name="invitee1"/></li>
-        <li><input type="text" name="invitee2"/></li>
-        <li><input type="text" name="invitee3"/></li>
-        <li><input type="text" name="invitee4"/></li>
-        <li><input type="text" name="invitee5"/></li>
-        <li><input type="text" name="invitee6"/></li>
-        <li><input type="text" name="invitee7"/></li>
-        <li><input type="text" name="invitee8"/></li>
-        <li><input type="text" name="invitee9"/></li>
-      </ul>
-      <p><input type="submit" value="Invite"/></p>
-    </form>
+    <p>Your Name: <input type="text" name="name"/></p>
+    <p>Your UNI:  <input type="text" name="uni"/></p>
+    <p>Put the UNIs of the people you'd like to invite below.
+       You can also leave a short message for them.</p>
+    <ul>
+      {% for i in numrange %}
+        <li>
+          UNI: <input class="uni" type="text" name="invitee{{i}}"/>
+          Message: <input class="message" type="text" name="message{{i}}"/>
+        </li>
+      {% endfor %}
+    </ul>
+    <p><input type="submit" value="Invite"/></p>
+  </form>
 {% endblock %}

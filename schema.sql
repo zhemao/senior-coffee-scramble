@@ -6,15 +6,16 @@ drop index if exists invitations_by_invitee;
 
 create table students (
     id serial primary key,
-    name varchar(255),
-    uni varchar(8) unique,
+    name varchar(64),
+    uni varchar(7) unique,
     confirmed boolean default false
 );
 
 create table invitations (
     id serial primary key,
-    inviter varchar(8),
-    invitee varchar(8),
+    inviter varchar(7),
+    invitee varchar(7),
+    message varchar(140),
     confirmed boolean default false,
     email_sent boolean default false,
     unique (inviter, invitee)

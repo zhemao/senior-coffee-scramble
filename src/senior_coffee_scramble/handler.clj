@@ -2,7 +2,8 @@
   (:use compojure.core
         senior-coffee-scramble.mailer
         senior-coffee-scramble.helpers
-        senior-coffee-scramble.database)
+        senior-coffee-scramble.database
+        senior-coffee-scramble.forms)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.string :as string]
@@ -11,19 +12,15 @@
             [ring.util.response :refer [redirect]]))
 
 (defn invite-handler [request]
-  (let [inviter-name (-> request :params :name)
-        inviter-uni  (-> request :params :uni)
-        invitee-unis (form-to-invitee-list (:form-params request))]
-    (if (or (string/blank? inviter-name)
-            (string/blank? inviter-uni)
-            (empty? invitee-unis))
-      (redirect "/?error=true")
-      (if-let [results (add-invitations inviter-name inviter-uni invitee-unis)]
-        (do
-          (go (try-function send-confirmation-email
-                            (first results) (rest results)))
-          (redirect (str "/recorded/" inviter-uni)))
-        (redirect (str "/already-sent/" inviter-uni))))))
+  (if-let [batch (form-to-invitation-batch
+                   (:form-params request))]
+    (if-let [results (add-invitations batch)]
+      (do
+        (go (try-function send-confirmation-email
+                          (first results) (rest results)))
+        (redirect (str "/recorded/" (:uni batch))))
+      (redirect (str "/already-sent/" (:uni batch))))
+    (redirect "/?error=true")))
 
 (defn confirm-handler [id]
   (if (valid-id? id)
@@ -35,8 +32,11 @@
     {:status 404
      :body (render-file "invalid-link.html" {})}))
 
+(defn index-handler [error]
+  (render-file "index.html" {:error error, :numrange (range 0 MAX_INVITEES)}))
+
 (defroutes app-routes
-  (GET "/" [error] (render-file "index.html" {:error error}))
+  (GET "/" [error] (index-handler error))
   (POST "/invite" request (invite-handler request))
   (GET "/recorded/:uni" [uni] (render-file "recorded.html" {:uni uni}))
   (GET "/already-sent/:uni" [uni]
