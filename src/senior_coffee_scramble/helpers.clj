@@ -1,4 +1,5 @@
 (ns senior-coffee-scramble.helpers
+  (:import (java.util.concurrent Executors))
   (:require [clojure.string :as string]))
 
 (defn getenv
@@ -59,3 +60,9 @@
             (do
               (action! group)
               (recur (list top) (rest stream)))))))))
+
+(def MAINPOOL (Executors/newFixedThreadPool
+                (Integer/parseInt (getenv "NWORKERS" "1"))))
+
+(defn pool-do [f & args]
+  (.submit MAINPOOL #(apply f args)))

@@ -7,7 +7,6 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.string :as string]
-            [clojure.core.async :refer [go]]
             [selmer.parser :refer [render-file]]
             [ring.util.response :refer [redirect]]))
 
@@ -16,8 +15,8 @@
                    (:form-params request))]
     (if-let [results (add-invitations batch)]
       (do
-        (go (try-function send-confirmation-email
-                          (first results) (rest results)))
+        (pool-do try-function send-confirmation-email
+                 (first results) (rest results))
         (redirect (str "/recorded/" (:uni batch))))
       (redirect (str "/already-sent/" (:uni batch))))
     (redirect "/?error=true")))
