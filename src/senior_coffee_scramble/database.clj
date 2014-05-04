@@ -62,7 +62,7 @@
 
 (defn find-unsent-invitations []
   (sql/query postgres-conf
-    ["SELECT i.id, i.invitee, s.uni, s.name FROM invitations i
+    ["SELECT i.id, i.invitee, i.message, s.uni, s.name FROM invitations i
         LEFT JOIN students s ON i.inviter = s.uni
         WHERE i.confirmed AND NOT i.email_sent ORDER BY i.invitee"]))
 

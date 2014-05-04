@@ -4,9 +4,13 @@
        to grab coffee with you and reconnect.</p>
     <ul>
       {% for invite in invitations %}
-        <li><a href="mailto:{{invite.uni}}@columbia.edu"/>
-          {{invite.name}} ({{invite.uni}})
-        </a></li>
+        <li>
+          <a href="mailto:{{invite.uni}}@columbia.edu"/>
+            {{invite.name}} ({{invite.uni}})</a>
+            {% if invite.message %}
+              - &quot;{{invite.message}}&quot;
+            {% endif %}
+        </li>
       {% endfor %}
     </ul>
   </body>
