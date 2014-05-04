@@ -5,14 +5,15 @@
 {% block body %}
   {% if error %}
     <p id="error-message">
-      You must fill in your name, UNI, and at least one invitee
+      You must fill in your name, your UNI, and the UNI of at least one invitee.
     </p>
   {% endif %}
   <form action="/invite" method="post">
     <p>Your Name: <input type="text" name="name"/></p>
     <p>Your UNI:  <input type="text" name="uni"/></p>
     <p>Put the UNIs of the people you'd like to invite below.
-       You can also leave a short message for them.</p>
+       You can also leave a short message (&lt; 140 characters)
+       for each invitee.</p>
     <ul>
       {% for i in numrange %}
         <li>
