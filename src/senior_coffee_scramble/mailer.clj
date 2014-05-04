@@ -5,6 +5,7 @@
 
 (def EMAIL-USER (getenv "EMAIL_USER"))
 (def SITE-NAME (getenv "SITE_NAME"))
+(def EMAIL-FROM (getenv "EMAIL_FROM" EMAIL-USER))
 
 (def EMAIL-CONFIG
   {:host (getenv "SMTP_HOST")
@@ -14,8 +15,7 @@
    :tls (= "true" (getenv "SMTP_TLS"))})
 
 (defn send-email [message]
-  (postal/send-message EMAIL-CONFIG
-                       (assoc message :from EMAIL-USER)))
+  (postal/send-message EMAIL-CONFIG message))
 
 (defn send-confirmation-email [inviter invitations]
   (let [obfuscated-id (obfuscate (:id inviter))
@@ -27,6 +27,7 @@
         text-body (render-file "confirmation-email.txt" template-args)
         html-body (render-file "confirmation-email.html" template-args)]
     (send-email {:to (str (:uni inviter) "@columbia.edu")
+                 :from EMAIL-FROM
                  :subject "Senior Coffee Match Confirmation"
                  :body [:alternative
                         {:type "text/plain"
