@@ -1,8 +1,21 @@
 (ns senior-coffee-scramble.core
-  (:use [senior-coffee-scramble.handler :only [app]]
-        [senior-coffee-scramble.batch :only [invitation-batch-send]]
-        [senior-coffee-scramble.helpers :only [getenv]])
+  (:gen-class)
+  (:use senior-coffee-scramble.handler
+        senior-coffee-scramble.helpers
+        senior-coffee-scramble.mailer
+        senior-coffee-scramble.database)
   (:require [ring.adapter.jetty :as ring]))
+
+(defn invitation-batch-send []
+  (let [invitations (find-unsent-invitations)]
+    (do-grouped :invitee invitations
+      (fn [invites]
+        (let [recipient (:invitee (first invites))]
+          (try
+            (send-invitation-digest recipient invites)
+            (mark-invitations-sent recipient)
+            (catch Exception e
+              (.printStackTrace e))))))))
 
 (defn start [host port]
   (ring/run-jetty app {:host host :port port :join? false}))
