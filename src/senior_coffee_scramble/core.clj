@@ -4,13 +4,14 @@
         [senior-coffee-scramble.helpers :only [getenv]])
   (:require [ring.adapter.jetty :as ring]))
 
-(defn start [port]
-  (ring/run-jetty app {:port port :join? false}))
+(defn start [host port]
+  (ring/run-jetty app {:host host :port port :join? false}))
 
 (defn -main [& args]
   (if-not (empty? args)
     (case (first args)
       "batch"  (invitation-batch-send)
-      "server" (start (Integer/parseInt (getenv "PORT" "3000")))
+      "server" (start (getenv "HOST" "127.0.0.1")
+                      (Integer/parseInt (getenv "PORT" "3000")))
       (println "Unrecognized subcommand"))
     (println "Please enter subcommand")))
