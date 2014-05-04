@@ -1,5 +1,5 @@
 (ns senior-coffee-scramble.core
-  (:use [senior-coffee-scramble.handler :only [app]]
+  (:use [senior-coffee-scramble.handler :only [app]])
   (:require [ring.adapter.jetty :as ring]))
 
 (defn start [port]
