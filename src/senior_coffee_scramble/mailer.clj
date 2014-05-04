@@ -3,12 +3,12 @@
   (:require [postal.core :as postal]
             [selmer.parser :refer [render-file]]))
 
-(def EMAIL_USER (getenv "EMAIL_USER"))
 (def SITE_NAME (getenv "SITE_NAME"))
-(def EMAIL_FROM (getenv "EMAIL_FROM" EMAIL_USER))
+(def EMAIL_USER (getenv "EMAIL_USER" (getenv "USER")))
+(def EMAIL_FROM (getenv "EMAIL_FROM" (str EMAIL_USER "@" SITE_NAME)))
 
 (def EMAIL_CONFIG
-  {:host (getenv "SMTP_HOST")
+  {:host (getenv "SMTP_HOST" "localhost")
    :user EMAIL_USER
    :pass (getenv "EMAIL_PASSWD")
    :port (Integer/parseInt (getenv "SMTP_PORT" "25"))
