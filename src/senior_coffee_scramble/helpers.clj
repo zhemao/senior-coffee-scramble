@@ -10,7 +10,7 @@
                    (map #(str "\tat " % "\n") (.getStackTrace e)))))
 
 (def OBFUSCATED_ID_RE (re-pattern "^[0-9a-f]{8}$"))
-(def SECRET_NUMBER (Integer/parseInt (getenv "SECRET_NUMBER") 16))
+(def SECRET_NUMBER (Integer/parseInt (getenv "SECRET_NUMBER" "0") 16))
 
 ; See http://stackoverflow.com/questions/8554286/obfuscating-an-id
 (def MASK1 0x00550055)
