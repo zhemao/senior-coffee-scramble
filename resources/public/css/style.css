@@ -30,3 +30,8 @@ input.message {
 #invite-button {
   text-align: center;
 }
+
+#invite-button input {
+  width: 100px;
+  height: 30px;
+}
