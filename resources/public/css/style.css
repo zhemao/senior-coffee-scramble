@@ -26,3 +26,7 @@ input.uni {
 input.message {
   width: 400px;
 }
+
+#invite-button {
+  text-align: center;
+}
