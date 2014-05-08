@@ -8,18 +8,21 @@
             [compojure.route :as route]
             [clojure.string :as string]
             [selmer.parser :refer [render-file]]
-            [ring.util.response :refer [redirect]]))
+            [ring.util.response :refer [redirect]]
+            [ring.middleware.cookies :refer [wrap-cookies]]))
 
 (defn invite-handler [request]
-  (if-let [batch (form-to-invitation-batch
-                   (:form-params request))]
-    (if-let [results (add-invitations batch)]
-      (do
-        (pool-do try-function send-confirmation-email
-                 (first results) (rest results))
-        (redirect (str "/recorded/" (:uni batch))))
-      (redirect (str "/already-sent/" (:uni batch))))
-    (redirect "/?error=true")))
+  (if (csrf-validate request)
+    (if-let [batch (form-to-invitation-batch
+                     (:form-params request))]
+      (if-let [results (add-invitations batch)]
+        (do
+          (pool-do try-function send-confirmation-email
+                   (first results) (rest results))
+          (redirect (str "/recorded/" (:uni batch))))
+        (redirect (str "/already-sent/" (:uni batch))))
+      (redirect "/?error=true"))
+    {:status 500, :body "Invalid CSRF Token"}))
 
 (defn confirm-handler [id]
   (if (valid-id? id)
@@ -32,7 +35,14 @@
      :body (render-file "invalid-link.html" {})}))
 
 (defn index-handler [error]
-  (render-file "index.html" {:error error, :numrange (range 0 MAX_INVITEES)}))
+  (let [csrf-token (format "%07x" (rand-int 0xfffffff))]
+    {:status 200
+     :headers {}
+     :cookies {"csrf-token" {:value csrf-token}}
+     :body (render-file "index.html"
+                        {:error error
+                         :numrange (range 0 MAX_INVITEES)
+                         :csrf-token csrf-token})}))
 
 (defroutes app-routes
   (GET "/" [error] (index-handler error))
@@ -45,4 +55,4 @@
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (wrap-cookies (handler/site app-routes)))

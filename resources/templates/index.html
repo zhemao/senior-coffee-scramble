@@ -10,6 +10,7 @@
     </p>
   {% endif %}
   <form action="/invite" method="post">
+    <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
     <p>Your Name: <input type="text" name="name"/></p>
     <p>Your UNI:  <input type="text" name="uni"/></p>
     <p>Put the UNIs of the people you'd like to invite below.

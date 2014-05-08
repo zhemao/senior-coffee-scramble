@@ -66,3 +66,8 @@
 
 (defn pool-do [f & args]
   (.submit MAINPOOL #(apply f args)))
+
+(defn csrf-validate [request]
+  (let [cookie-value (get-in request ["cookies" "csrf-token" :value])
+        form-value (get-in request ["form-params" "csrf-token"])]
+    (= cookie-value form-value)))
