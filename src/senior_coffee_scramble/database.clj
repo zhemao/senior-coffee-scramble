@@ -19,6 +19,9 @@
   (first-or-nil
     (sql/query trans ["SELECT * FROM students WHERE id = ?" id])))
 
+(defn find-invitations-by-inviter [trans uni]
+  (sql/query trans ["SELECT * FROM invitations WHERE inviter = ?" uni]))
+
 (defn insert-invitations [trans inviter-uni invitations]
   (apply (partial sql/insert! trans :invitations)
      (for [invite invitations]
@@ -72,3 +75,11 @@
 
 (defn cleanup-sent-invitations []
   (sql/delete! postgres-conf :invitations ["email_sent"]))
+
+(defn find-student-invitations [uni]
+  (sql/with-db-transaction [trans postgres-conf]
+    (if-let [student (find-student-by-uni trans uni)]
+      (cons
+        student
+        (sql/query trans ["SELECT * FROM invitations WHERE inviter = ?" uni]))
+      nil)))

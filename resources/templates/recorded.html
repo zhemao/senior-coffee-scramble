@@ -6,4 +6,13 @@
 <p>Your invitations have been recorded. An email has been sent to you
 at {{uni}}@columbia.edu with a confirmation link. Once you have
 confirmed these invitations, we will begin emailing your invitees.</p>
+
+<p>If you do not see your email in a timely manner, press the button below
+to resend.</p>
+
+<form action="/resend" method="POST">
+    <input type="hidden" name="uni" value="{{uni}}"/>
+    <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
+    <p><input type="submit" name="Resend"/></p>
+</form>
 {% endblock %}

@@ -22,7 +22,19 @@
           (redirect (str "/recorded/" (:uni batch))))
         (redirect (str "/already-sent/" (:uni batch))))
       (redirect "/?error=true"))
-    {:status 500, :body "Invalid CSRF Token"}))
+    {:status 400, :body "Invalid CSRF Token"}))
+
+(defn resend-handler [request]
+  (if (csrf-validate request)
+    (let [uni (get-in request [:params :uni])
+          results (find-student-invitations uni)]
+      (if results
+        (do
+          (pool-do try-function send-confirmation-email
+                   (first results) (rest results))
+          (redirect (str "/recorded/" uni)))
+        {:status 400, :body "No such UNI recorded"}))
+    {:status 400, :body "Invalid CSRF Token"}))
 
 (defn confirm-handler [id]
   (if (valid-id? id)
@@ -35,7 +47,7 @@
      :body (render-file "invalid-link.html" {})}))
 
 (defn index-handler [error]
-  (let [csrf-token (format "%07x" (rand-int 0xfffffff))]
+  (let [csrf-token (csrf-generate)]
     {:status 200
      :headers {}
      :cookies {"csrf-token" {:value csrf-token}}
@@ -44,10 +56,19 @@
                          :numrange (range 0 MAX_INVITEES)
                          :csrf-token csrf-token})}))
 
+(defn recorded-handler [uni]
+  (let [csrf-token (csrf-generate)]
+    {:status 200
+     :headers {}
+     :cookies {"csrf-token" {:value csrf-token}}
+     :body (render-file "recorded.html"
+                        {:uni uni, :csrf-token csrf-token})}))
+
 (defroutes app-routes
   (GET "/" [error] (index-handler error))
   (POST "/invite" request (invite-handler request))
-  (GET "/recorded/:uni" [uni] (render-file "recorded.html" {:uni uni}))
+  (POST "/resend" request (resend-handler request))
+  (GET "/recorded/:uni" [uni] (recorded-handler uni))
   (GET "/already-sent/:uni" [uni]
        (render-file "already-sent.html" {:uni uni}))
   (GET "/confirm/:id" [id] (confirm-handler id))
