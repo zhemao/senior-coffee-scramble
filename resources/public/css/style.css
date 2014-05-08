@@ -35,3 +35,8 @@ input.message {
   width: 100px;
   height: 30px;
 }
+
+form {
+  padding: 5px;
+  border: 1px solid #aaa;
+}
