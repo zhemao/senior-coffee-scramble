@@ -36,9 +36,10 @@ input.message {
   height: 30px;
 }
 
-#invite-form {
+.bordered-form {
   padding: 5px;
   border: 1px solid #aaa;
+  background-color: #f7f7f7;
 }
 
 textarea {
