@@ -13,6 +13,6 @@ to resend.</p>
 <form action="/resend" method="POST">
     <input type="hidden" name="uni" value="{{uni}}"/>
     <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
-    <p><input type="submit" name="Resend"/></p>
+    <p id="submit-button"><input type="submit" value="Resend"/></p>
 </form>
 {% endblock %}

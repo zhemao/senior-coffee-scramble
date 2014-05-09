@@ -15,7 +15,7 @@
       You must fill in your name, your UNI, and the UNI of at least one invitee.
     </p>
   {% endif %}
-  <form action="/invite" method="post">
+  <form id="invite-form" action="/invite" method="post">
     <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
     <p>Your Name: <input type="text" name="name"/></p>
     <p>Your UNI:  <input type="text" name="uni"/></p>
@@ -30,6 +30,6 @@
         </li>
       {% endfor %}
     </ul>
-    <p id="invite-button"><input type="submit" value="Invite"/></p>
+    <p id="submit-button"><input type="submit" value="Invite"/></p>
   </form>
 {% endblock %}

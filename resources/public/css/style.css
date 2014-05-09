@@ -27,16 +27,16 @@ input.message {
   width: 400px;
 }
 
-#invite-button {
+#submit-button {
   text-align: center;
 }
 
-#invite-button input {
+#submit-button input {
   width: 100px;
   height: 30px;
 }
 
-form {
+#invite-form {
   padding: 5px;
   border: 1px solid #aaa;
 }
