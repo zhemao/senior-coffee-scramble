@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Feedback From{% endblock %}
+
+{% block body %}
+<h1>Send Feedback</h1>
+
+<p>
+Having a problem with app? Suggestions for improvement? Send them to the
+friendly administrator by filling out the following form.
+</p>
+
+<form action="/feedback" method="POST">
+  <p>UNI: <input type="text" name="uni"/></p>
+  <p>Message: </p>
+  <textarea name="message"></textarea>
+  <p class="submit"><input type="submit" value="Send Feedback"/></p>
+</form>
+{% endblock %}

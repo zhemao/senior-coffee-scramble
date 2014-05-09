@@ -18,11 +18,15 @@
   {:to recipient
    :from EMAIL_FROM
    :subject subject
-   :body [:alternative
-          {:type "text/plain"
-           :content text-body}
-          {:type "text/html"
-           :content html-body}]})
+   :body (if (nil? html-body)
+           ; if the html body is nil, send plaintext email
+           text-body
+           ; otherwise send multipart alternative
+           [:alternative
+            {:type "text/plain"
+             :content text-body}
+            {:type "text/html"
+             :content html-body}])})
 
 (def RETRY_DELAY 500)
 (def SENDMSG_RETRIES 2)
@@ -70,3 +74,8 @@
     (send-email (str recipient "@columbia.edu")
                 "Senior Coffee Scramble Invitations"
                 text-body html-body)))
+
+(defn send-feedback-email [uni message]
+  (send-email (getenv "ADMIN_EMAIL")
+              (str "CU Senior Coffee Scramble Feedback from " uni)
+              (str uni " says,\n\n" message) nil))

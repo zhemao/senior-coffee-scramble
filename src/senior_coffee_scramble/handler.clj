@@ -36,6 +36,11 @@
         {:status 400, :body "No such UNI recorded"}))
     {:status 400, :body "Invalid CSRF Token"}))
 
+(defn feedback-handler [request]
+  (let [params (:params request)]
+    (pool-do send-feedback-email (:uni params) (:message params))
+    (redirect (str "/feedback-sent/" (:uni params)))))
+
 (defn confirm-handler [id]
   (if (valid-id? id)
     (let [student (confirm-invitations (deobfuscate id))]
@@ -68,9 +73,13 @@
   (GET "/" [error] (index-handler error))
   (POST "/invite" request (invite-handler request))
   (POST "/resend" request (resend-handler request))
+  (POST "/feedback" request (feedback-handler request))
   (GET "/recorded/:uni" [uni] (recorded-handler uni))
   (GET "/already-sent/:uni" [uni]
        (render-file "already-sent.html" {:uni uni}))
+  (GET "/feedback" [] (render-file "feedback.html" {}))
+  (GET "/feedback-sent/:uni" [uni]
+       (render-file "feedback-sent.html" {:uni uni}))
   (GET "/confirm/:id" [id] (confirm-handler id))
   (route/resources "/")
   (route/not-found "Not Found"))

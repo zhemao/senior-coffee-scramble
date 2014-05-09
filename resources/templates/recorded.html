@@ -13,6 +13,17 @@ to resend.</p>
 <form action="/resend" method="POST">
     <input type="hidden" name="uni" value="{{uni}}"/>
     <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
-    <p id="submit-button"><input type="submit" value="Resend"/></p>
+    <p class="submit"><input type="submit" value="Resend"/></p>
 </form>
+
+<p>If, after resending multiple times, you are still not receiving the
+confirmation email, click the button below to send an error report to the
+administrator.</p>
+
+<form action="/feedback" method="POST">
+  <input type="hidden" name="uni" value="{{uni}}"/>
+  <input type="hidden" name="message" value="Not getting confirmation email."/>
+  <p class="submit"><input type="submit" value="Send Error Report"/></p>
+</form>
+
 {% endblock %}

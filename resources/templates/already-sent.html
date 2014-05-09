@@ -4,5 +4,11 @@
 
 {% block body %}
 <p>Invitations have already been sent for {{uni}}. If you believe this was
-done in error, please contact the administrator at <!-- fill in here --></p>
+done in error, click the button below to email the administrator.</p>
+
+<form action="/feedback" method="POST">
+  <input type="hidden" name="uni" value="{{uni}}"/>
+  <input type="hidden" name="message" value="Invitations sent erroneously."/>
+  <p class="submit"><input type="submit" value="Send Error Report"/></p>
+</form>
 {% endblock %}

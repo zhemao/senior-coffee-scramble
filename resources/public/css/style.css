@@ -27,16 +27,21 @@ input.message {
   width: 400px;
 }
 
-#submit-button {
+.submit {
   text-align: center;
 }
 
-#submit-button input {
-  width: 100px;
+.submit input {
+  min-width: 100px;
   height: 30px;
 }
 
 #invite-form {
   padding: 5px;
   border: 1px solid #aaa;
+}
+
+textarea {
+  width: 100%;
+  height: 300px;
 }
