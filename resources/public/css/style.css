@@ -4,6 +4,11 @@ body {
 
 h1 {
   text-align: center;
+  font-weight: normal;
+  font-family: serif;
+  border-bottom: 2px solid #4B3621;
+  margin: 0px;
+  padding: 10px;
 }
 
 #error-message {
