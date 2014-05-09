@@ -11,6 +11,12 @@ h1 {
   padding: 10px;
 }
 
+#footer {
+  border-top: 2px solid #4B3621;
+  text-align: center;
+  padding-top: 10px;
+}
+
 #error-message {
   color: #f00;
 }
