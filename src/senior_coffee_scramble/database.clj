@@ -46,9 +46,8 @@
         (if-not (:confirmed existing-student)
           (do
             (sql/delete! trans :invitations ["inviter = ?" (:uni batch)])
-            (cons (assoc student :id
-                         (first (sql/update! trans :students student
-                                             ["uni = ?" (:uni batch)])))
+            (sql/update! trans :students student ["uni = ?" (:uni batch)])
+            (cons (assoc student :id (:id existing-student))
                   (insert-invitations trans (:uni batch)
                                       (:invitations batch))))
           ; otherwise, return nil
