@@ -54,6 +54,12 @@
           ; otherwise, return nil
           nil)))))
 
+(defn revoke-confirmations [uni]
+  (sql/with-db-transaction [trans postgres-conf]
+    (sql/update! trans :students {:confirmed false} ["uni = ?" uni])
+    (sql/update! trans :invitations {:confirmed false, :email_sent false}
+                 ["inviter = ?" uni])))
+
 (defn confirm-invitations [id]
   (sql/with-db-transaction [trans postgres-conf]
     (let [student (find-student-by-id trans id)]
@@ -83,3 +89,23 @@
         student
         (sql/query trans ["SELECT * FROM invitations WHERE inviter = ?" uni]))
       nil)))
+
+(defn count-query [table where-clause]
+  (-> (sql/query postgres-conf
+        [(format "SELECT COUNT(*) FROM %s WHERE %s" table where-clause)])
+    first :count))
+
+(defn count-total-students []
+  (count-query "students" "true"))
+
+(defn count-total-invitations []
+  (count-query "invitations" "true"))
+
+(defn count-confirmed-students []
+  (count-query "students" "confirmed"))
+
+(defn count-confirmed-invitations []
+  (count-query "invitations" "confirmed"))
+
+(defn count-sent-invitations []
+  (count-query "invitations" "email_sent"))

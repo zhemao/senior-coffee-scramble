@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Console{% endblock %}
+
+{% block body %}
+<h1>Admin Console</h1>
+
+<table>
+<tr><th>Total Signups:</th><td>{{signups-total}}</td></tr>
+<tr><th>Total Invitations:</th><td>{{invitations-total}}</td></tr>
+<tr><th>Confirmed Signups:</th><td>{{signups-confirmed}}</td></tr>
+<tr><th>Confirmed Invitations:</th><td>{{invitations-confirmed}}</td></tr>
+<tr><th>Sent Invitations:</th><td>{{invitations-sent}}</td></tr>
+</table>
+
+<hr/>
+
+<form class="bordered-form" action="/revoke" method="post">
+<p>Revoke a user's confirmation.</p>
+{% if revoke-success %}
+<p class="success">Revocation Successful</p>
+{% endif %}
+<input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
+<p>UNI: <input type="text" name="uni"></input>
+   <input type="submit" value="Revoke Confirmation"/></p>
+</form>
+{% endblock %}

@@ -69,6 +69,24 @@
      :body (render-file "recorded.html"
                         {:uni uni, :csrf-token csrf-token})}))
 
+(defn admin-handler [success]
+  (let [csrf-token (csrf-generate)]
+    (render-file "admin.html"
+                 {:signups-total (count-total-students)
+                  :signups-confirmed (count-confirmed-students)
+                  :invitations-total (count-total-invitations)
+                  :invitations-confirmed (count-confirmed-invitations)
+                  :invitations-sent (count-sent-invitations)
+                  :csrf-token csrf-token
+                  :revoke-success (= success "revoke")})))
+
+(defn revoke-handler [request]
+  (if (csrf-validate request)
+    (let [uni (-> request :params :uni)]
+      (revoke-confirmations uni)
+      (redirect "/admin?success=revoke"))
+    {:status 400, :body "Invalid CSRF Token"}))
+
 (defroutes app-routes
   (GET "/" [error] (index-handler error))
   (POST "/invite" request (invite-handler request))
@@ -81,6 +99,8 @@
   (GET "/feedback-sent/:uni" [uni]
        (render-file "feedback-sent.html" {:uni uni}))
   (GET "/confirm/:id" [id] (confirm-handler id))
+  (GET "/admin" [success] (admin-handler success))
+  (POST "/revoke" request (revoke-handler request))
   (route/resources "/")
   (route/not-found "Not Found"))
 
