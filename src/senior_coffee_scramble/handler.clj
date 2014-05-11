@@ -102,8 +102,15 @@
   (GET "/confirm/:id" [id] (confirm-handler id))
   (GET "/admin" [success] (admin-handler success))
   (POST "/revoke" request (revoke-handler request))
+  (GET "/exception" [] (throw (Exception. "Error")))
   (route/resources "/")
   (route/not-found "Not Found"))
 
+(defn wrap-errors [handler]
+  (fn [request]
+    (try
+      (handler request)
+      (catch Exception e {:status 500, :body (exception-stacktrace e)}))))
+
 (def app
-  (wrap-cookies (handler/site app-routes)))
+  (-> (handler/site app-routes) wrap-cookies wrap-errors))
