@@ -77,6 +77,7 @@
                   :invitations-total (count-total-invitations)
                   :invitations-confirmed (count-confirmed-invitations)
                   :invitations-sent (count-sent-invitations)
+                  :unconfirmed (get-unconfirmed-students)
                   :csrf-token csrf-token
                   :revoke-success (= success "revoke")})))
 

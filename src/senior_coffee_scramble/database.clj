@@ -108,3 +108,7 @@
 
 (defn count-sent-invitations []
   (count-query "invitations" "email_sent"))
+
+(defn get-unconfirmed-students []
+  (sql/query postgres-conf
+             ["SELECT * FROM students WHERE NOT confirmed"]))

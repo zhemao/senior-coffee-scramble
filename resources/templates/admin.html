@@ -15,6 +15,19 @@
 
 <hr/>
 
+<h2>Unconfirmed Signups</h2>
+
+<table>
+{% for student in unconfirmed %}
+  <tr>
+    <td>{{student.name}}</td>
+    <td>{{student.uni}}@columbia.edu</td>
+  </tr>
+{% endfor %}
+</table>
+
+<hr/>
+
 <form class="bordered-form" action="/revoke" method="post">
 <p>Revoke a user's confirmation.</p>
 {% if revoke-success %}
