@@ -11,22 +11,22 @@
     with but never quite got the chance to below, and we'll send them an email.
   </p>
   {% if error %}
-    <p id="error-message">
-      You must fill in your name, your UNI, and the UNI of at least one invitee.
-    </p>
+    <p id="error-message">{{error}}</p>
   {% endif %}
   <form class="bordered-form" action="/invite" method="post">
     <input type="hidden" name="csrf-token" value="{{csrf-token}}"/>
-    <p>Your Name: <input type="text" name="name"/></p>
-    <p>Your UNI:  <input type="text" name="uni"/></p>
+    <p>Your Name: <input type="text" name="name" value="{{name}}"/></p>
+    <p>Your UNI:  <input type="text" name="uni" value="{{uni}}"/></p>
     <p>Put the UNIs of the people you'd like to invite below.
        You can also leave a short message (&lt; 140 characters)
        for each invitee.</p>
     <ul>
-      {% for i in numrange %}
+      {% for i,invitee,message in invitations %}
         <li>
-          UNI: <input class="uni" type="text" name="invitee{{i}}"/>
-          Message: <input class="message" type="text" name="message{{i}}"/>
+          UNI: <input class="uni" type="text" name="invitee{{i}}"
+                      value="{{invitee}}"/>
+          Message: <input class="message" type="text" name="message{{i}}"
+                          value="{{message}}"/>
         </li>
       {% endfor %}
     </ul>

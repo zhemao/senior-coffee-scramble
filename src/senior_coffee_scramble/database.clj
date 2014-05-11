@@ -50,7 +50,7 @@
             (cons (assoc student :id (:id existing-student))
                   (insert-invitations trans (:uni batch)
                                       (:invitations batch))))
-          ; otherwise, return nil
+          ; otherwise, throw an AppException
           nil)))))
 
 (defn revoke-confirmations [uni]

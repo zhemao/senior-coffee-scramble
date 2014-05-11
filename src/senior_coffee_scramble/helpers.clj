@@ -1,6 +1,7 @@
 (ns senior-coffee-scramble.helpers
   (:import (java.util.concurrent Executors))
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [ring.util.codec :refer [url-encode]]))
 
 (defn getenv
   ([varname] (getenv varname ""))
@@ -74,3 +75,9 @@
   (let [cookie-value (get-in request ["cookies" "csrf-token" :value])
         form-value (get-in request ["form-params" "csrf-token"])]
     (= cookie-value form-value)))
+
+(defn build-url-string [base params]
+  (str base "?"
+    (string/join "&"
+      (for [[k v] (seq params)]
+        (str (url-encode k) "=" (url-encode v))))))

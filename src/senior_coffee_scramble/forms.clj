@@ -17,15 +17,24 @@
     (for [i (range MAX_INVITEES)]
       (let [invitee (form (str "invitee" i))
             message (form (str "message" i))]
-        (if (re-matches UNI_RE invitee)
-          (Invitation. invitee (truncate 140 message)) nil)))))
+        (cond
+          (empty? invitee) nil
+          (not (re-matches UNI_RE invitee))
+            (throw (ex-info (str "Invalid UNI " invitee) {}))
+          :else (Invitation. invitee (truncate 140 message)))))))
 
 (defn form-to-invitation-batch [form]
   (let [invite-list (form-to-invitation-list form)
         inviter-name (form "name")
         inviter-uni  (form "uni")]
-    (if-not (or (empty? inviter-name)
-                (> (count inviter-name) 64)
-                (not (re-matches UNI_RE inviter-uni))
-                (empty? invite-list))
-      (InvitationBatch. inviter-name inviter-uni invite-list) nil)))
+    (cond
+      (empty? inviter-name)
+        (throw (ex-info "name field is blank" {}))
+      (> (count inviter-name) 64)
+        (throw (ex-info "name field too long (limit is 64 characters)" {}))
+      (not (re-matches UNI_RE inviter-uni))
+        (throw (ex-info (str "invalid uni " inviter-uni) {}))
+      (empty? invite-list)
+        (throw (ex-info "No invitees" {}))
+      :else
+        (InvitationBatch. inviter-name inviter-uni invite-list))))

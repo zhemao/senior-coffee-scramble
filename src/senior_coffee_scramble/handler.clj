@@ -1,4 +1,5 @@
 (ns senior-coffee-scramble.handler
+  (:import clojure.lang.ExceptionInfo)
   (:use compojure.core
         senior-coffee-scramble.mailer
         senior-coffee-scramble.helpers
@@ -13,15 +14,18 @@
 
 (defn invite-handler [request]
   (if (csrf-validate request)
-    (if-let [batch (form-to-invitation-batch
-                     (:form-params request))]
-      (if-let [results (add-invitations batch)]
-        (do
-          (pool-do try-function send-confirmation-email
-                   (first results) (rest results))
-          (redirect (str "/recorded/" (:uni batch))))
-        (redirect (str "/already-sent/" (:uni batch))))
-      (redirect "/?error=true"))
+    (try
+      (let [batch (form-to-invitation-batch
+                    (:form-params request))]
+        (if-let [results (add-invitations batch)]
+          (do
+            (pool-do try-function send-confirmation-email
+                     (first results) (rest results))
+            (redirect (str "/recorded/" (:uni batch))))
+          (redirect (str "/already-sent/" (:uni batch)))))
+      (catch ExceptionInfo e
+        (redirect (build-url-string "/"
+                    (assoc (:form-params request) "error" (.getMessage e))))))
     {:status 400, :body "Invalid CSRF Token"}))
 
 (defn resend-handler [request]
@@ -51,14 +55,19 @@
     {:status 404
      :body (render-file "invalid-link.html" {})}))
 
-(defn index-handler [error]
-  (let [csrf-token (csrf-generate)]
+(defn index-handler [request]
+  (let [get-param (fn [pname i] (get-in request [:query-params (str pname i)]))
+        csrf-token (csrf-generate)
+        invitations (for [i (range 0 MAX_INVITEES)]
+                      [i (get-param "invitee" i) (get-param "message" i)])]
     {:status 200
      :headers {}
      :cookies {"csrf-token" {:value csrf-token}}
      :body (render-file "index.html"
-                        {:error error
-                         :numrange (range 0 MAX_INVITEES)
+                        {:name (get-in request [:params :name])
+                         :uni  (get-in request [:params :uni])
+                         :error (get-in request [:params :error])
+                         :invitations invitations
                          :csrf-token csrf-token})}))
 
 (defn recorded-handler [uni]
@@ -89,7 +98,7 @@
     {:status 400, :body "Invalid CSRF Token"}))
 
 (defroutes app-routes
-  (GET "/" [error] (index-handler error))
+  (GET "/" request (index-handler request))
   (POST "/invite" request (invite-handler request))
   (POST "/resend" request (resend-handler request))
   (POST "/feedback" request (feedback-handler request))
