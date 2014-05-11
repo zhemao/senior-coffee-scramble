@@ -30,6 +30,8 @@
     (cond
       (empty? inviter-name)
         (throw (ex-info "name field is blank" {}))
+      (empty? inviter-uni)
+        (throw (ex-info "UNI field is blank" {}))
       (> (count inviter-name) 64)
         (throw (ex-info "name field too long (limit is 64 characters)" {}))
       (not (re-matches UNI_RE inviter-uni))
