@@ -10,7 +10,7 @@
 
 (defn truncate [n s]
   (if (> (count s) n)
-    (subs 0 n) s))
+    (subs s 0 n) s))
 
 (defn form-to-invitation-list [form]
   (remove nil?
