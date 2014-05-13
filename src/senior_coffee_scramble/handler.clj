@@ -119,7 +119,12 @@
   (fn [request]
     (try
       (handler request)
-      (catch Exception e {:status 500, :body (exception-stacktrace e)}))))
+      (catch Exception e
+        (let [stacktrace (exception-stacktrace e)
+              errmsg (str "Error at " (:uri request) "\n" stacktrace)]
+          (pool-do send-feedback-email "Error report" errmsg)
+          (println errmsg)
+          {:status 500, :body stacktrace})))))
 
 (def app
   (-> (handler/site app-routes) wrap-cookies wrap-errors))
